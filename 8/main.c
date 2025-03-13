@@ -23,13 +23,11 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Создание именованных каналов
     const char *fifo1 = "/tmp/fifo1";
     const char *fifo2 = "/tmp/fifo2";
     mkfifo(fifo1, 0666);
     mkfifo(fifo2, 0666);
 
-    // Чтение данных из файла
     int fd = open(input_file, O_RDONLY);
     if (fd == -1) {
         perror("Ошибка открытия входного файла");
@@ -45,21 +43,18 @@ int main(int argc, char *argv[]) {
     buffer[bytes_read] = '\0';
     close(fd);
 
-    // Передача данных и N через fifo1
     int fifo_fd = open(fifo1, O_WRONLY);
     if (fifo_fd == -1) {
         perror("Ошибка открытия fifo1");
         return 1;
     }
 
-    // Формируем сообщение: "данные\nN"
     char message[BUFFER_SIZE + 10];
     snprintf(message, sizeof(message), "%s\n%d", buffer, n);
 
     write(fifo_fd, message, strlen(message) + 1);
     close(fifo_fd);
 
-    // Получение результата через fifo2
     fifo_fd = open(fifo2, O_RDONLY);
     if (fifo_fd == -1) {
         perror("Ошибка открытия fifo2");
@@ -74,7 +69,6 @@ int main(int argc, char *argv[]) {
     }
     close(fifo_fd);
 
-    // Запись результата в файл
     fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1) {
         perror("Ошибка открытия выходного файла");
@@ -84,7 +78,6 @@ int main(int argc, char *argv[]) {
     write(fd, result, bytes_read);
     close(fd);
 
-    // Удаление именованных каналов
     unlink(fifo1);
     unlink(fifo2);
 

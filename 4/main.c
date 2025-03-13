@@ -6,7 +6,6 @@
 
 #define BUFFER_SIZE 5000
 
-// Функция для поиска последовательности
 void find_sequence(const char *input, int n, char *result) {
     int len = strlen(input);
     for (int i = 0; i <= len - n; i++) {
@@ -40,7 +39,7 @@ int main(int argc, char *argv[]) {
         printf("Ошибка: N должно быть положительным числом.\n");
         return 1;
     }
-
+    
     int pipe1[2], pipe2[2];
     if (pipe(pipe1) == -1 || pipe(pipe2) == -1) {
         perror("Ошибка создания канала");
@@ -54,7 +53,6 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid1 == 0) {
-        // Первый процесс: чтение из файла и запись в pipe1
         close(pipe1[0]);
         int fd = open(input_file, O_RDONLY);
         if (fd == -1) {
@@ -83,7 +81,6 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid2 == 0) {
-        // Второй процесс: чтение из pipe1, обработка, запись в pipe2
         close(pipe1[1]);
         close(pipe2[0]);
 
@@ -104,7 +101,6 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    // Третий процесс: чтение из pipe2 и запись в файл
     close(pipe1[0]);
     close(pipe1[1]);
     close(pipe2[1]);

@@ -8,7 +8,6 @@
 
 #define BUFFER_SIZE 5000
 
-// Функция для поиска последовательности
 void find_sequence(const char *input, int n, char *result) {
     int len = strlen(input);
     for (int i = 0; i <= len - n; i++) {
@@ -43,7 +42,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Создание именованных каналов
     const char *fifo1 = "/tmp/fifo1";
     const char *fifo2 = "/tmp/fifo2";
     mkfifo(fifo1, 0666);
@@ -56,7 +54,6 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid1 == 0) {
-        // Первый процесс: чтение из файла и запись в fifo1
         int fd = open(input_file, O_RDONLY);
         if (fd == -1) {
             perror("Ошибка открытия входного файла");
@@ -90,7 +87,6 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid2 == 0) {
-        // Второй процесс: чтение из fifo1, обработка, запись в fifo2
         int fifo_fd = open(fifo1, O_RDONLY);
         if (fifo_fd == -1) {
             perror("Ошибка открытия fifo1");
@@ -120,7 +116,6 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    // Третий процесс: чтение из fifo2 и запись в файл
     int fifo_fd = open(fifo2, O_RDONLY);
     if (fifo_fd == -1) {
         perror("Ошибка открытия fifo2");
@@ -144,7 +139,6 @@ int main(int argc, char *argv[]) {
     write(fd, result, bytes_read);
     close(fd);
 
-    // Удаление именованных каналов
     unlink(fifo1);
     unlink(fifo2);
 

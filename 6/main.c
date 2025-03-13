@@ -6,7 +6,6 @@
 
 #define BUFFER_SIZE 5000
 
-// Функция для поиска последовательности
 void find_sequence(const char *input, int n, char *result) {
     int len = strlen(input);
     for (int i = 0; i <= len - n; i++) {
@@ -54,9 +53,8 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid == 0) {
-        // Второй процесс: чтение из pipe1, обработка, запись в pipe2
-        close(pipe1[1]); // Закрываем запись в pipe1
-        close(pipe2[0]); // Закрываем чтение из pipe2
+        close(pipe1[1]);
+        close(pipe2[0]);
 
         char buffer[BUFFER_SIZE];
         ssize_t bytes_read = read(pipe1[0], buffer, BUFFER_SIZE);
@@ -74,9 +72,8 @@ int main(int argc, char *argv[]) {
         close(pipe2[1]);
         exit(0);
     } else {
-        // Первый процесс: чтение из файла, запись в pipe1, чтение из pipe2, запись в файл
-        close(pipe1[0]); // Закрываем чтение из pipe1
-        close(pipe2[1]); // Закрываем запись в pipe2
+        close(pipe1[0]);
+        close(pipe2[1]);
 
         int fd = open(input_file, O_RDONLY);
         if (fd == -1) {
